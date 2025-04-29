@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -656,16 +655,18 @@ const AdminPage = () => {
                   <CardTitle>Daftar Cerita</CardTitle>
                   <CardDescription className="flex items-center justify-between">
                     <span>Kelola cerita berdasarkan topik</span>
-                    <Select value={storyTopicId} onValueChange={handleTopicChange} className="w-[200px]">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Pilih topik" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {topics.map((topic) => (
-                          <SelectItem key={topic.id} value={topic.id}>{topic.title}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <div className="w-[200px]">
+                      <Select value={storyTopicId} onValueChange={handleTopicChange}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Pilih topik" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {topics.map((topic) => (
+                            <SelectItem key={topic.id} value={topic.id}>{topic.title}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
