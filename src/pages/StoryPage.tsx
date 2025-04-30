@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import LikeButton from '@/components/LikeButton';
+import FeedbackButton from '@/components/FeedbackButton';
 import { getStory } from '@/lib/firebase';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -122,7 +123,10 @@ PS: Sekarang kita udah pacaran 6 bulan. Kencan pertama kita nonton film dokument
                       <Badge key={tag} variant="secondary" className="font-normal">{tag}</Badge>
                     ))}
                   </div>
-                  <LikeButton storyId={displayStory.id} initialLikes={displayStory.likes || 0} />
+                  <div className="flex gap-2">
+                    <LikeButton storyId={displayStory.id} initialLikes={displayStory.likes || 0} />
+                    <FeedbackButton storyId={displayStory.id} storyTitle={displayStory.title} />
+                  </div>
                 </div>
               </div>
 

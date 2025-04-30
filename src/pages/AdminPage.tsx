@@ -40,10 +40,18 @@ interface Story {
 interface StatsData {
   totalStories: number;
   totalLikes: number;
+  totalFeedback: number;
   topStories: {
     id: string;
     title: string;
     likes: number;
+    feedbackCount: number;
+  }[];
+  recentFeedback: {
+    id: string;
+    storyTitle: string;
+    content: string;
+    createdAt: string;
   }[];
 }
 
@@ -56,7 +64,9 @@ const AdminPage = () => {
   const [statsData, setStatsData] = useState<StatsData>({
     totalStories: 0,
     totalLikes: 0,
-    topStories: []
+    totalFeedback: 0,
+    topStories: [],
+    recentFeedback: []
   });
   const [loadingStats, setLoadingStats] = useState(false);
   
@@ -362,8 +372,10 @@ const AdminPage = () => {
           <div className="mb-8">
             <StatsCard 
               totalStories={statsData.totalStories} 
-              totalLikes={statsData.totalLikes} 
+              totalLikes={statsData.totalLikes}
+              totalFeedback={statsData.totalFeedback}
               topStories={statsData.topStories}
+              recentFeedback={statsData.recentFeedback}
               loading={loadingStats}
             />
           </div>

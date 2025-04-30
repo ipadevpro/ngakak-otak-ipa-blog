@@ -2,14 +2,24 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from 'recharts';
+import { MessageSquare } from 'lucide-react';
+import { format, parseISO, isValid } from 'date-fns';
 
 interface StatsCardProps {
   totalStories: number;
   totalLikes: number;
+  totalFeedback?: number;
   topStories: {
     id: string;
     title: string;
     likes: number;
+    feedbackCount?: number;
+  }[];
+  recentFeedback?: {
+    id: string;
+    storyTitle: string;
+    content: string;
+    createdAt: string;
   }[];
   loading?: boolean;
 }
@@ -17,19 +27,37 @@ interface StatsCardProps {
 export default function StatsCard({ 
   totalStories, 
   totalLikes, 
+  totalFeedback = 0,
   topStories,
+  recentFeedback = [],
   loading = false 
 }: StatsCardProps) {
   
   const chartData = topStories.map(story => ({
     name: story.title.length > 20 ? `${story.title.substring(0, 20)}...` : story.title,
     likes: story.likes || 0,
+    feedback: story.feedbackCount || 0,
     fullTitle: story.title
   }));
   
   const chartConfig = {
     likes: {
       color: "#3B82F6"
+    },
+    feedback: {
+      color: "#6366F1"
+    }
+  };
+  
+  const formatDate = (dateString: string) => {
+    try {
+      const date = parseISO(dateString);
+      if (isValid(date)) {
+        return format(date, 'dd MMM yyyy, HH:mm');
+      }
+      return 'Invalid date';
+    } catch (e) {
+      return 'Invalid date';
     }
   };
   
@@ -41,7 +69,7 @@ export default function StatsCard({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <Card className="bg-blue-50 dark:bg-blue-900/30">
             <CardContent className="p-4 flex flex-col items-center justify-center text-center">
               <span className="text-3xl font-bold text-blue-700 dark:text-blue-300">{totalStories}</span>
@@ -52,6 +80,12 @@ export default function StatsCard({
             <CardContent className="p-4 flex flex-col items-center justify-center text-center">
               <span className="text-3xl font-bold text-blue-700 dark:text-blue-300">{totalLikes}</span>
               <span className="text-sm text-blue-600 dark:text-blue-400">Total Likes</span>
+            </CardContent>
+          </Card>
+          <Card className="bg-blue-50 dark:bg-blue-900/30">
+            <CardContent className="p-4 flex flex-col items-center justify-center text-center">
+              <span className="text-3xl font-bold text-blue-700 dark:text-blue-300">{totalFeedback}</span>
+              <span className="text-sm text-blue-600 dark:text-blue-400">Total Feedback</span>
             </CardContent>
           </Card>
         </div>
@@ -84,6 +118,9 @@ export default function StatsCard({
                             <p className="text-blue-600 dark:text-blue-400">
                               {payload[0]?.value} likes
                             </p>
+                            <p className="text-indigo-600 dark:text-indigo-400">
+                              {payload[0]?.payload?.feedback} feedback
+                            </p>
                           </div>
                         </ChartTooltipContent>
                       )
@@ -100,6 +137,31 @@ export default function StatsCard({
             </ChartContainer>
           </div>
         </div>
+        
+        {recentFeedback.length > 0 && (
+          <div className="pt-4 border-t">
+            <h3 className="font-medium mb-3 text-blue-800 dark:text-blue-300">
+              <div className="flex items-center gap-2">
+                <MessageSquare className="h-4 w-4" />
+                <span>Feedback Terbaru</span>
+              </div>
+            </h3>
+            
+            <div className="space-y-3">
+              {recentFeedback.map((item) => (
+                <Card key={item.id} className="p-3">
+                  <div className="mb-1 text-sm font-medium text-blue-700 dark:text-blue-400">
+                    {item.storyTitle}
+                  </div>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">{item.content}</p>
+                  <div className="mt-2 text-xs text-gray-500">
+                    {formatDate(item.createdAt)}
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
