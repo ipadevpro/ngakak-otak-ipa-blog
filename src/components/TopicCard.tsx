@@ -14,13 +14,13 @@ export default function TopicCard({ id, title, description, emoji, category }: T
   const getCategoryColorClass = () => {
     switch (category) {
       case 'physics':
-        return 'border-blue-400 bg-blue-50 dark:bg-blue-950';
+        return 'border-blue-500 bg-blue-50 dark:bg-blue-950';
       case 'biology':
-        return 'border-green-400 bg-green-50 dark:bg-green-950';
+        return 'border-green-500 bg-green-50 dark:bg-green-950';
       case 'chemistry':
-        return 'border-purple-400 bg-purple-50 dark:bg-purple-950';
+        return 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950';
       default:
-        return 'border-gray-400';
+        return 'border-blue-400';
     }
   };
   
@@ -29,7 +29,7 @@ export default function TopicCard({ id, title, description, emoji, category }: T
       <Card className={`topic-card h-full hover:cursor-pointer hover:shadow-md transition-all duration-300 hover:-translate-y-1 border-l-4 ${getCategoryColorClass()}`}>
         <CardContent className="p-4 flex flex-col h-full">
           <div className="text-4xl mb-4 animate-bounce-small">{emoji}</div>
-          <CardTitle className="mb-2">{title}</CardTitle>
+          <CardTitle className="mb-2 text-blue-800 dark:text-blue-300">{title}</CardTitle>
           <p className="text-sm text-muted-foreground mt-auto">{description}</p>
         </CardContent>
       </Card>

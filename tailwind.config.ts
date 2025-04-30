@@ -63,13 +63,13 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Custom theme colors for our blog
+				// Custom theme colors - updated to blue dominant palette
 				theme: {
-					purple: '#9b87f5',
-					'purple-light': '#E5DEFF',
-					pink: '#FFDEE2',
-					blue: '#D3E4FD',
-					'blue-bright': '#1EAEDB',
+					purple: '#4285F4', // Changed to Google Blue
+					'purple-light': '#D6E4FF', // Light blue
+					pink: '#E8F0FE', // Very light blue
+					blue: '#D3E4FD', // Light blue
+					'blue-bright': '#1A73E8', // Bright blue
 				}
 			},
 			borderRadius: {
