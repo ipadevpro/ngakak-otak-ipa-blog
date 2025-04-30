@@ -29,6 +29,20 @@ export const logout = () => {
   return signOut(auth);
 };
 
+// Define story type for better type checking
+interface Story {
+  id: string;
+  title: string;
+  content?: string;
+  subtitle?: string;
+  topicId?: string;
+  tags?: string[];
+  learningPoints?: string;
+  likes: number;
+  likedBy?: string[];
+  [key: string]: any; // Allow for other properties
+}
+
 // Data functions
 export const getTopics = async () => {
   const topicsCollection = collection(db, "topics");
@@ -112,12 +126,19 @@ export const checkIfLiked = async (storyId: string, userId: string) => {
 export const getStoriesStatistics = async () => {
   const storiesCollection = collection(db, "stories");
   const storiesSnapshot = await getDocs(storiesCollection);
-  const stories = storiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  const stories = storiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Story));
   
   // Calculate statistics
   const totalStories = stories.length;
   const totalLikes = stories.reduce((acc, story) => acc + (story.likes || 0), 0);
-  const topStories = [...stories].sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 5);
+  const topStories = [...stories]
+    .sort((a, b) => (b.likes || 0) - (a.likes || 0))
+    .slice(0, 5)
+    .map(story => ({
+      id: story.id,
+      title: story.title || "Untitled Story",
+      likes: story.likes || 0
+    }));
   
   return {
     totalStories,
