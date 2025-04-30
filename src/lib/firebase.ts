@@ -1,3 +1,4 @@
+
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDoc, getDocs, query, where, increment, arrayUnion, arrayRemove, serverTimestamp, orderBy, limit, Timestamp } from "firebase/firestore";
@@ -148,12 +149,12 @@ export const getFeedback = async (storyId: string) => {
   return feedbackSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 
-export const getAllFeedback = async (limit = 50) => {
+export const getAllFeedback = async (limitCount = 50) => {
   const feedbackCollection = collection(db, "feedback");
   const feedbackQuery = query(
     feedbackCollection,
     orderBy("createdAt", "desc"),
-    limit(limit)
+    limit(limitCount)
   );
   const feedbackSnapshot = await getDocs(feedbackQuery);
   return feedbackSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -223,3 +224,4 @@ export const getStoriesStatistics = async () => {
     recentFeedback
   };
 };
+
