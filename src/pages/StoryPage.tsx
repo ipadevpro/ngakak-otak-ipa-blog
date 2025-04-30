@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
+import LikeButton from '@/components/LikeButton';
 import { getStory } from '@/lib/firebase';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -26,6 +27,7 @@ interface Story {
   topicId: string;
   tags: string[];
   learningPoints: string;
+  likes?: number;
 }
 
 const StoryPage = () => {
@@ -79,7 +81,8 @@ PS: Sekarang kita udah pacaran 6 bulan. Kencan pertama kita nonton film dokument
 2. **Momentum**: Hasil kali massa dan kecepatan benda (p = m × v)
 3. **Gaya Gesek**: Gaya yang menghambat gerakan benda, bergantung pada permukaan
 4. **Hukum Kekekalan Momentum**: Momentum total sistem sebelum dan sesudah tumbukan adalah sama
-    `
+    `,
+    likes: 42
   };
 
   const displayStory = story || sampleStory;
@@ -113,10 +116,13 @@ PS: Sekarang kita udah pacaran 6 bulan. Kencan pertama kita nonton film dokument
               <div className="mb-8">
                 <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">{displayStory.title}</h1>
                 <p className="text-muted-foreground">{displayStory.subtitle}</p>
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {displayStory.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="font-normal">{tag}</Badge>
-                  ))}
+                <div className="flex flex-wrap items-center gap-4 mt-4">
+                  <div className="flex flex-wrap gap-2">
+                    {displayStory.tags.map((tag) => (
+                      <Badge key={tag} variant="secondary" className="font-normal">{tag}</Badge>
+                    ))}
+                  </div>
+                  <LikeButton storyId={displayStory.id} initialLikes={displayStory.likes || 0} />
                 </div>
               </div>
 
@@ -126,7 +132,7 @@ PS: Sekarang kita udah pacaran 6 bulan. Kencan pertama kita nonton film dokument
                     <AccordionItem value="learning-points" className="border-none">
                       <AccordionTrigger className="py-2">
                         <div className="flex items-center">
-                          <LightbulbIcon className="h-4 w-4 mr-2 text-theme-purple" />
+                          <LightbulbIcon className="h-4 w-4 mr-2 text-blue-600" />
                           <span>Pelajaran IPA yang diselipin di cerita ini</span>
                         </div>
                       </AccordionTrigger>

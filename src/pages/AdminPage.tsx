@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
+import StatsCard from '@/components/StatsCard';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -14,8 +15,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
-import { addTopic, addStory, getTopics, deleteTopic, updateTopic, getStoriesByTopic, deleteStory, updateStory, getStory } from '@/lib/firebase';
-import { Loader2, Plus, Book, BookOpen, Edit, Trash2, Save } from 'lucide-react';
+import { addTopic, addStory, getTopics, deleteTopic, updateTopic, getStoriesByTopic, deleteStory, updateStory, getStory, getStoriesStatistics } from '@/lib/firebase';
+import { Loader2, Plus, Book, BookOpen, Edit, Trash2, Save, BarChart } from 'lucide-react';
 
 interface Topic {
   id: string;
@@ -33,6 +34,17 @@ interface Story {
   topicId: string;
   tags: string[];
   learningPoints: string;
+  likes?: number;
+}
+
+interface StatsData {
+  totalStories: number;
+  totalLikes: number;
+  topStories: {
+    id: string;
+    title: string;
+    likes: number;
+  }[];
 }
 
 const AdminPage = () => {
@@ -41,6 +53,12 @@ const AdminPage = () => {
   const [loading, setLoading] = useState(false);
   const [topics, setTopics] = useState<Topic[]>([]);
   const [stories, setStories] = useState<Story[]>([]);
+  const [statsData, setStatsData] = useState<StatsData>({
+    totalStories: 0,
+    totalLikes: 0,
+    topStories: []
+  });
+  const [loadingStats, setLoadingStats] = useState(false);
   
   // Topic form state
   const [topicTitle, setTopicTitle] = useState('');
@@ -87,7 +105,20 @@ const AdminPage = () => {
     };
 
     fetchTopics();
+    fetchStatistics();
   }, [currentUser, navigate, loading]);
+
+  const fetchStatistics = async () => {
+    setLoadingStats(true);
+    try {
+      const stats = await getStoriesStatistics();
+      setStatsData(stats as StatsData);
+    } catch (error) {
+      console.error("Error fetching statistics:", error);
+    } finally {
+      setLoadingStats(false);
+    }
+  };
 
   const fetchStories = async (topicId: string) => {
     try {
@@ -221,7 +252,8 @@ const AdminPage = () => {
         content: storyContent,
         topicId: storyTopicId,
         tags: storyTags.split(',').map(tag => tag.trim()),
-        learningPoints: storyLearningPoints
+        learningPoints: storyLearningPoints,
+        likes: 0
       });
 
       toast.success("Cerita lo udah naik pangkat jadi konten 🤓");
@@ -229,8 +261,9 @@ const AdminPage = () => {
       // Reset form
       resetStoryForm();
       
-      // Refresh stories list
+      // Refresh stories list and statistics
       fetchStories(storyTopicId);
+      fetchStatistics();
     } catch (error) {
       console.error("Error adding story:", error);
       toast.error("Gagal menambahkan cerita. Coba lagi ya!");
@@ -258,8 +291,9 @@ const AdminPage = () => {
       // Reset form
       resetStoryForm();
       
-      // Refresh stories list
+      // Refresh stories list and statistics
       fetchStories(storyTopicId);
+      fetchStatistics();
     } catch (error) {
       console.error("Error updating story:", error);
       toast.error("Gagal mengupdate cerita. Coba lagi ya!");
@@ -279,8 +313,9 @@ const AdminPage = () => {
       
       toast.success("Cerita berhasil dihapus!");
       
-      // Refresh stories list
+      // Refresh stories list and statistics
       fetchStories(storyTopicId);
+      fetchStatistics();
     } catch (error) {
       console.error("Error deleting story:", error);
       toast.error("Gagal menghapus cerita. Coba lagi ya!");
@@ -321,7 +356,17 @@ const AdminPage = () => {
       
       <main className="flex-1 py-12">
         <div className="container px-4 md:px-6">
-          <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+          <h1 className="text-3xl font-bold mb-6 text-blue-800 dark:text-blue-300">Admin Dashboard</h1>
+          
+          {/* Stats Card */}
+          <div className="mb-8">
+            <StatsCard 
+              totalStories={statsData.totalStories} 
+              totalLikes={statsData.totalLikes} 
+              topStories={statsData.topStories}
+              loading={loadingStats}
+            />
+          </div>
           
           <Tabs defaultValue="topics" value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2 mb-8">
@@ -681,6 +726,7 @@ const AdminPage = () => {
                           <TableHead>Judul</TableHead>
                           <TableHead>Subtitle</TableHead>
                           <TableHead>Tags</TableHead>
+                          <TableHead>Likes</TableHead>
                           <TableHead>Aksi</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -697,6 +743,11 @@ const AdminPage = () => {
                                   </span>
                                 ))}
                               </div>
+                            </TableCell>
+                            <TableCell>
+                              <span className="bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 px-2 py-0.5 rounded-full text-xs font-medium">
+                                {story.likes || 0} ❤️
+                              </span>
                             </TableCell>
                             <TableCell>
                               <div className="flex items-center gap-2">

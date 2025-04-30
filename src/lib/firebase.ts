@@ -1,7 +1,7 @@
 
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDoc, getDocs, query, where, increment, arrayUnion, arrayRemove } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCg1GsAGYfzCyV4BPDp_H93XcTiZTVAygU",
@@ -67,7 +67,7 @@ export const deleteTopic = async (topicId: string) => {
 };
 
 export const addStory = async (story: any) => {
-  return addDoc(collection(db, "stories"), story);
+  return addDoc(collection(db, "stories"), { ...story, likes: 0, likedBy: [] });
 };
 
 export const updateStory = async (storyId: string, data: any) => {
@@ -78,4 +78,50 @@ export const updateStory = async (storyId: string, data: any) => {
 export const deleteStory = async (storyId: string) => {
   const storyRef = doc(db, "stories", storyId);
   return deleteDoc(storyRef);
+};
+
+// New functions for likes
+export const likeStory = async (storyId: string, userId: string) => {
+  const storyRef = doc(db, "stories", storyId);
+  return updateDoc(storyRef, {
+    likes: increment(1),
+    likedBy: arrayUnion(userId)
+  });
+};
+
+export const unlikeStory = async (storyId: string, userId: string) => {
+  const storyRef = doc(db, "stories", storyId);
+  return updateDoc(storyRef, {
+    likes: increment(-1),
+    likedBy: arrayRemove(userId)
+  });
+};
+
+export const checkIfLiked = async (storyId: string, userId: string) => {
+  if (!userId) return false;
+  const storyRef = doc(db, "stories", storyId);
+  const storyDoc = await getDoc(storyRef);
+  if (storyDoc.exists()) {
+    const storyData = storyDoc.data();
+    return storyData.likedBy && storyData.likedBy.includes(userId);
+  }
+  return false;
+};
+
+// Statistics functions
+export const getStoriesStatistics = async () => {
+  const storiesCollection = collection(db, "stories");
+  const storiesSnapshot = await getDocs(storiesCollection);
+  const stories = storiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  
+  // Calculate statistics
+  const totalStories = stories.length;
+  const totalLikes = stories.reduce((acc, story) => acc + (story.likes || 0), 0);
+  const topStories = [...stories].sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 5);
+  
+  return {
+    totalStories,
+    totalLikes,
+    topStories
+  };
 };
