@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -33,53 +32,7 @@ const TopicsPage = () => {
     fetchTopics();
   }, []);
 
-  // Sample data for preview if Firebase is empty
-  const sampleTopics: Topic[] = [
-    {
-      id: "physics1",
-      title: "Gaya & Gerak",
-      description: "Kisah absurd tentang anak jatuh cinta gara-gara Hukum Newton 💥",
-      emoji: "🔭",
-      category: "physics"
-    },
-    {
-      id: "biology1",
-      title: "Sistem Pernapasan",
-      description: "Cerita kocak tentang napas yang hilang saat ketemu mantan 😮‍💨",
-      emoji: "🫁",
-      category: "biology"
-    },
-    {
-      id: "chemistry1",
-      title: "Unsur & Senyawa",
-      description: "Kisah absurd tentang cinta yang seperti reaksi kimia 🧪",
-      emoji: "⚗️",
-      category: "chemistry"
-    },
-    {
-      id: "physics2",
-      title: "Listrik & Magnet",
-      description: "Cerita tentang daya tarik magnetis crush yang bikin galau 🧲",
-      emoji: "⚡",
-      category: "physics"
-    },
-    {
-      id: "biology2",
-      title: "Sel & Jaringan",
-      description: "Drama seluler yang lebih ribet dari sinetron 🦠",
-      emoji: "🔬",
-      category: "biology"
-    },
-    {
-      id: "chemistry2",
-      title: "Asam & Basa",
-      description: "Rasanya ditolak gebetan itu mirip cairan asam yang menyengat 🍋",
-      emoji: "🧴",
-      category: "chemistry"
-    }
-  ];
-
-  const displayTopics = topics.length > 0 ? topics : sampleTopics;
+  const displayTopics = topics.length > 0 ? topics : [];
 
   return (
     <div className="flex flex-col min-h-screen">

@@ -1,8 +1,5 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from 'recharts';
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, Heart } from 'lucide-react';
 import { format, parseISO, isValid } from 'date-fns';
 
 interface StatsCardProps {
@@ -33,22 +30,6 @@ export default function StatsCard({
   loading = false 
 }: StatsCardProps) {
   
-  const chartData = topStories.map(story => ({
-    name: story.title.length > 20 ? `${story.title.substring(0, 20)}...` : story.title,
-    likes: story.likes || 0,
-    feedback: story.feedbackCount || 0,
-    fullTitle: story.title
-  }));
-  
-  const chartConfig = {
-    likes: {
-      color: "#3B82F6"
-    },
-    feedback: {
-      color: "#6366F1"
-    }
-  };
-  
   const formatDate = (dateString: string) => {
     try {
       const date = parseISO(dateString);
@@ -68,7 +49,7 @@ export default function StatsCard({
           Statistik Cerita
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-8">
         <div className="grid grid-cols-3 gap-4">
           <Card className="bg-blue-50 dark:bg-blue-900/30">
             <CardContent className="p-4 flex flex-col items-center justify-center text-center">
@@ -90,56 +71,39 @@ export default function StatsCard({
           </Card>
         </div>
         
-        <div className="pt-2">
-          <h3 className="font-medium mb-3 text-blue-800 dark:text-blue-300">Top 5 Cerita Populer</h3>
+        <div className="border-t pt-6 mt-4">
+          <h3 className="font-medium mb-4 text-blue-800 dark:text-blue-300">Top 5 Cerita Populer</h3>
           
-          <div className="h-[200px] w-full">
-            <ChartContainer
-              config={chartConfig}
-            >
-              <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 30 }}>
-                <XAxis 
-                  dataKey="name" 
-                  angle={-45}
-                  textAnchor="end"
-                  tick={{ fontSize: 10 }}
-                  height={70}
-                />
-                <YAxis />
-                <ChartTooltip
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <ChartTooltipContent
-                          className="bg-white dark:bg-gray-800"
-                        >
-                          <div className="p-2">
-                            <p className="font-medium">{payload[0]?.payload?.fullTitle}</p>
-                            <p className="text-blue-600 dark:text-blue-400">
-                              {payload[0]?.value} likes
-                            </p>
-                            <p className="text-indigo-600 dark:text-indigo-400">
-                              {payload[0]?.payload?.feedback} feedback
-                            </p>
-                          </div>
-                        </ChartTooltipContent>
-                      )
-                    }
-                    return null
-                  }}
-                />
-                <Bar dataKey="likes" fill="#3B82F6" barSize={30} radius={[4, 4, 0, 0]}>
-                  {chartData.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={`rgba(59, 130, 246, ${1 - index * 0.15})`} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ChartContainer>
+          <div className="grid gap-3">
+            {topStories.map((story, index) => (
+              <Card key={story.id} className={`p-3 border-l-4 ${index === 0 ? 'border-l-blue-500' : index === 1 ? 'border-l-blue-400' : 'border-l-blue-300'}`}>
+                <div className="flex justify-between items-center">
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">{story.title}</div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1 text-sm">
+                      <MessageSquare className="h-3.5 w-3.5 text-indigo-500" />
+                      <span>{story.feedbackCount || 0}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-sm">
+                      <Heart className="h-3.5 w-3.5 text-pink-500" />
+                      <span>{story.likes}</span>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ))}
+            {topStories.length === 0 && (
+              <p className="text-center text-muted-foreground py-4">
+                Belum ada cerita yang populer.
+              </p>
+            )}
           </div>
         </div>
         
         {recentFeedback.length > 0 && (
-          <div className="pt-4 border-t">
+          <div className="border-t pt-6 mt-6">
             <h3 className="font-medium mb-3 text-blue-800 dark:text-blue-300">
               <div className="flex items-center gap-2">
                 <MessageSquare className="h-4 w-4" />

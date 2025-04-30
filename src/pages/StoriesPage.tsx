@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -39,79 +38,7 @@ const StoriesPage = () => {
     fetchStories();
   }, [topicId]);
 
-  // Sample data for preview
-  const sampleStories: Record<string, Story[]> = {
-    "physics1": [
-      {
-        id: "story1",
-        title: "Cinta di Atas Trolley: Sebuah Perjuangan Gaya Gesek",
-        subtitle: "Materi: Gaya dan Gerak – Hukum Newton 1",
-        tags: ["Fisika", "Gaya", "Newton"]
-      },
-      {
-        id: "story2",
-        title: "Ketika Gravitasi Menarik Hatiku ke Bumi",
-        subtitle: "Materi: Gaya dan Gerak – Gravitasi",
-        tags: ["Fisika", "Gravitasi", "Newton"]
-      },
-      {
-        id: "story3",
-        title: "Nge-gym ala Newton: Kenapa Angkat Beban Bikin Gue Makin Berotot",
-        subtitle: "Materi: Gaya dan Gerak – Hukum Newton 3",
-        tags: ["Fisika", "Gaya", "Newton"]
-      }
-    ],
-    "biology1": [
-      {
-        id: "story4",
-        title: "Mengapa Napas Gue Hilang Pas Ketemu Mantan",
-        subtitle: "Materi: Sistem Pernapasan – Pertukaran Gas",
-        tags: ["Biologi", "Pernapasan", "Organ"]
-      },
-      {
-        id: "story5",
-        title: "Jantungku Berdebar Seperti Habis Lari Marathon",
-        subtitle: "Materi: Sistem Peredaran Darah",
-        tags: ["Biologi", "Jantung", "Organ"]
-      }
-    ],
-    "chemistry1": [
-      {
-        id: "story6",
-        title: "Cinta itu Seperti Garam: Larut tapi Terasa",
-        subtitle: "Materi: Larutan dan Campuran",
-        tags: ["Kimia", "Larutan", "Senyawa"]
-      },
-      {
-        id: "story7",
-        title: "Mengapa Hati Seperti Gas Ideal",
-        subtitle: "Materi: Zat dan Perubahannya",
-        tags: ["Kimia", "Gas", "Tekanan"]
-      }
-    ]
-  };
-
-  const topicTitles: Record<string, string> = {
-    "physics1": "Gaya & Gerak",
-    "biology1": "Sistem Pernapasan",
-    "chemistry1": "Unsur & Senyawa",
-    "physics2": "Listrik & Magnet",
-    "biology2": "Sel & Jaringan",
-    "chemistry2": "Asam & Basa"
-  };
-
-  // Set topic title and use sample data if no stories
-  useEffect(() => {
-    if (topicId && topicTitles[topicId]) {
-      setTopicTitle(topicTitles[topicId]);
-    }
-  }, [topicId]);
-
-  const displayStories = stories.length > 0 
-    ? stories 
-    : (topicId && sampleStories[topicId]
-      ? sampleStories[topicId]
-      : []);
+  const displayStories = stories;
 
   return (
     <div className="flex flex-col min-h-screen">

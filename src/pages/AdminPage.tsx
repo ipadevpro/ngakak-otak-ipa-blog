@@ -88,7 +88,8 @@ const AdminPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentTopicId, setCurrentTopicId] = useState('');
   const [currentStoryId, setCurrentStoryId] = useState('');
-  const [showPreview, setShowPreview] = useState(false);
+  const [showContentPreview, setShowContentPreview] = useState(false);
+  const [showLearningPointsPreview, setShowLearningPointsPreview] = useState(false);
   const [activeTab, setActiveTab] = useState('topics');
 
   useEffect(() => {
@@ -117,6 +118,13 @@ const AdminPage = () => {
     fetchTopics();
     fetchStatistics();
   }, [currentUser, navigate, loading]);
+
+  // Add a separate effect to handle tab changes
+  useEffect(() => {
+    if (activeTab === "stories" && topics.length > 0 && storyTopicId) {
+      fetchStories(storyTopicId);
+    }
+  }, [activeTab]);
 
   const fetchStatistics = async () => {
     setLoadingStats(true);
@@ -161,7 +169,8 @@ const AdminPage = () => {
     setStoryLearningPoints('');
     setCurrentStoryId('');
     setIsEditing(false);
-    setShowPreview(false);
+    setShowContentPreview(false);
+    setShowLearningPointsPreview(false);
   };
 
   const handleAddTopic = async (e: React.FormEvent) => {
@@ -369,7 +378,7 @@ const AdminPage = () => {
           <h1 className="text-3xl font-bold mb-6 text-blue-800 dark:text-blue-300">Admin Dashboard</h1>
           
           {/* Stats Card */}
-          <div className="mb-8">
+          <div className="mb-8 relative z-10">
             <StatsCard 
               totalStories={statsData.totalStories} 
               totalLikes={statsData.totalLikes}
@@ -380,13 +389,21 @@ const AdminPage = () => {
             />
           </div>
           
-          <Tabs defaultValue="topics" value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2 mb-8">
+          <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue="topics">
+            <TabsList className="grid w-full grid-cols-2 mb-8 relative z-50">
               <TabsTrigger value="topics">
                 <Book className="h-4 w-4 mr-2" />
                 <span>Kelola Topik</span>
               </TabsTrigger>
-              <TabsTrigger value="stories">
+              <TabsTrigger 
+                value="stories" 
+                onClick={() => {
+                  setActiveTab("stories");
+                  if (topics.length > 0 && storyTopicId) {
+                    fetchStories(storyTopicId);
+                  }
+                }}
+              >
                 <BookOpen className="h-4 w-4 mr-2" />
                 <span>Kelola Cerita</span>
               </TabsTrigger>
@@ -625,13 +642,13 @@ const AdminPage = () => {
                           type="button"
                           variant="outline"
                           size="sm"
-                          onClick={() => setShowPreview(!showPreview)}
+                          onClick={() => setShowContentPreview(!showContentPreview)}
                         >
-                          {showPreview ? 'Edit Mode' : 'Preview'}
+                          {showContentPreview ? 'Edit Mode' : 'Preview'}
                         </Button>
                       </div>
                       
-                      {showPreview ? (
+                      {showContentPreview ? (
                         <Card className="border p-4 min-h-[200px]">
                           <MarkdownRenderer content={storyContent} />
                         </Card>
@@ -654,13 +671,13 @@ const AdminPage = () => {
                           type="button"
                           variant="outline"
                           size="sm"
-                          onClick={() => setShowPreview(!showPreview)}
+                          onClick={() => setShowLearningPointsPreview(!showLearningPointsPreview)}
                         >
-                          {showPreview ? 'Edit Mode' : 'Preview'}
+                          {showLearningPointsPreview ? 'Edit Mode' : 'Preview'}
                         </Button>
                       </div>
                       
-                      {showPreview ? (
+                      {showLearningPointsPreview ? (
                         <Card className="border p-4 min-h-[100px]">
                           <MarkdownRenderer content={storyLearningPoints} />
                         </Card>
@@ -710,7 +727,7 @@ const AdminPage = () => {
               <Card>
                 <CardHeader>
                   <CardTitle>Daftar Cerita</CardTitle>
-                  <CardDescription className="flex items-center justify-between">
+                  <div className="text-sm text-muted-foreground flex items-center justify-between">
                     <span>Kelola cerita berdasarkan topik</span>
                     <div className="w-[200px]">
                       <Select value={storyTopicId} onValueChange={handleTopicChange}>
@@ -724,7 +741,7 @@ const AdminPage = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                  </CardDescription>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   {stories.length === 0 ? (

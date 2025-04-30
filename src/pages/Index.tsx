@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
@@ -57,35 +56,17 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Sample stories teaser */}
+        {/* Call to action section */}
         <section className="py-12 md:py-20">
           <div className="container px-4 md:px-6">
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Cerita Populer</h2>
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Mau Baca Cerita Apa Hari Ini?</h2>
               <p className="mt-4 text-muted-foreground">
-                Scroll aja dulu, siapa tahu relate sama hidup kamu 🫠
+                Yuk cek topik IPA favoritmu dan mulai baca!
               </p>
             </div>
-            <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-              <div className="rounded-xl border bg-card p-6">
-                <h3 className="text-lg font-bold">Cinta di Atas Trolley: Sebuah Perjuangan Gaya Gesek</h3>
-                <p className="mt-2 text-sm text-muted-foreground">Materi: Gaya dan Gerak – Hukum Newton 1</p>
-                <p className="mt-4">
-                  Jadi gini, gue ketemu cewek di supermarket. Dia dorongin trolley penuh mie instan, gue trolley penuh sayur. Terus trolley gue nabrak dia. Dan lo tau hukum fisika pertama? Benda diam akan tetep diam sampai ada gaya yang—
-                </p>
-                <Button variant="link" className="mt-4 p-0">Baca selengkapnya &rarr;</Button>
-              </div>
-              <div className="rounded-xl border bg-card p-6">
-                <h3 className="text-lg font-bold">Mengapa Hati Apalagi Isi Dompetku Seperti Gas Ideal</h3>
-                <p className="mt-2 text-sm text-muted-foreground">Materi: Zat dan Perubahannya – Gas dan Tekanan</p>
-                <p className="mt-4">
-                  Lo pernah nggak, habis THR lebaran merasa hidup sempurna, tapi dua minggu kemudian lo melihat ke ATM dan ternyata saldo lo udah menyusut seperti gas dalam ruang terbuka? Ini erat kaitannya dengan konsep gas ideal yang—
-                </p>
-                <Button variant="link" className="mt-4 p-0">Baca selengkapnya &rarr;</Button>
-              </div>
-            </div>
             <div className="mt-10 flex justify-center">
-              <Button asChild>
+              <Button asChild size="lg">
                 <Link to="/topics">Lihat Semua Topik</Link>
               </Button>
             </div>

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -53,40 +52,7 @@ const StoryPage = () => {
     fetchStory();
   }, [storyId]);
 
-  // Sample story for preview
-  const sampleStory: Story = {
-    id: "story1",
-    title: "Cinta di Atas Trolley: Sebuah Perjuangan Gaya Gesek",
-    subtitle: "Materi: Gaya dan Gerak – Hukum Newton 1",
-    content: `
-# Cinta di Atas Trolley: Sebuah Perjuangan Gaya Gesek
-
-Jadi gini, gue ketemu cewek di supermarket. Dia dorongin trolley penuh mie instan, gue trolley penuh sayur. Kalau kata bokap gue, "Nak, kamu harus makan sayur biar sehat." Padahal yang mereka maksud itu ya cuma daun singkong sama wortel doang. Emang ada sayuran lain? Oh ada, kangkung. Trio sayur Indonesia banget itu. 
-
-Anyway, fokus ke ceritanya. Trolley gue nabrak trolley dia. Dan lo tau hukum fisika pertama kan? Benda diam akan tetep diam sampai ada gaya yang memengaruhinya. Ya, sayangnya trolley gue bukan benda diam, dia benda bergerak, dan gue ngga sadar kalau lantai supermarket itu licin abis.
-
-Ketika gue ngerem mendadak karena lihat diskon daging (siapa yang ngga kaget lihat daging diskon 50%, coba?), trolley gue tetep meluncur dengan indahnya berkat momentum. Lo inget kan momentum? Massa × kecepatan. Nah, saat itu, trolley berisi sayuran dengan massa lumayan berat itu tetap meluncur karena... gaya gesek yang kecil!
-
-Dan tau apa yang lebih tragis? Gue jadi ngerti BANGET konsep gaya gesek dan momentum gara-gara insiden itu. Trolley gue melaju, nabrak trolley dia, terus makanan kita bercampur. Persis kayak animasi tabrakan atom yang sering ditunjukin guru IPA.
-
-Akhirnya, gue minta maaf sambil memunguti belanjaan, dan dia ketawa. "Nggak apa-apa," katanya. "Gue ngerti kok, ini soal momentum."
-
-Dan begitulah, kadang fisika SMP yang kayaknya ngebosenin ternyata bisa jadi awal kisah cinta. Meskipun harus dimulai dengan tabrakan fisik dulu.
-
-PS: Sekarang kita udah pacaran 6 bulan. Kencan pertama kita nonton film dokumenter Neil deGrasse Tyson. Romantis kan?
-    `,
-    topicId: "physics1",
-    tags: ["Fisika", "Gaya", "Newton"],
-    learningPoints: `
-1. **Hukum I Newton**: Benda akan tetap diam atau bergerak lurus beraturan jika tidak ada gaya yang bekerja padanya
-2. **Momentum**: Hasil kali massa dan kecepatan benda (p = m × v)
-3. **Gaya Gesek**: Gaya yang menghambat gerakan benda, bergantung pada permukaan
-4. **Hukum Kekekalan Momentum**: Momentum total sistem sebelum dan sesudah tumbukan adalah sama
-    `,
-    likes: 42
-  };
-
-  const displayStory = story || sampleStory;
+  const displayStory = story;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -95,7 +61,7 @@ PS: Sekarang kita udah pacaran 6 bulan. Kencan pertama kita nonton film dokument
       <main className="flex-1 py-8 md:py-12">
         <div className="container px-4 md:px-6 max-w-4xl">
           <Button variant="ghost" size="sm" className="mb-6" asChild>
-            <Link to={`/topics/${displayStory.topicId}`}>
+            <Link to={`/topics/${displayStory?.topicId}`}>
               <ChevronLeft className="mr-2 h-4 w-4" /> Kembali ke Daftar Cerita
             </Link>
           </Button>
@@ -115,17 +81,17 @@ PS: Sekarang kita udah pacaran 6 bulan. Kencan pertama kita nonton film dokument
           ) : (
             <>
               <div className="mb-8">
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">{displayStory.title}</h1>
-                <p className="text-muted-foreground">{displayStory.subtitle}</p>
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">{displayStory?.title}</h1>
+                <p className="text-muted-foreground">{displayStory?.subtitle}</p>
                 <div className="flex flex-wrap items-center gap-4 mt-4">
                   <div className="flex flex-wrap gap-2">
-                    {displayStory.tags.map((tag) => (
+                    {displayStory?.tags.map((tag) => (
                       <Badge key={tag} variant="secondary" className="font-normal">{tag}</Badge>
                     ))}
                   </div>
                   <div className="flex gap-2">
-                    <LikeButton storyId={displayStory.id} initialLikes={displayStory.likes || 0} />
-                    <FeedbackButton storyId={displayStory.id} storyTitle={displayStory.title} />
+                    <LikeButton storyId={displayStory?.id} initialLikes={displayStory?.likes || 0} />
+                    <FeedbackButton storyId={displayStory?.id} storyTitle={displayStory?.title} />
                   </div>
                 </div>
               </div>
@@ -142,7 +108,7 @@ PS: Sekarang kita udah pacaran 6 bulan. Kencan pertama kita nonton film dokument
                       </AccordionTrigger>
                       <AccordionContent>
                         <div className="text-sm space-y-2 pl-6">
-                          <MarkdownRenderer content={displayStory.learningPoints} />
+                          <MarkdownRenderer content={displayStory?.learningPoints} />
                         </div>
                       </AccordionContent>
                     </AccordionItem>
@@ -151,7 +117,7 @@ PS: Sekarang kita udah pacaran 6 bulan. Kencan pertama kita nonton film dokument
               </Card>
 
               <div className="story-content">
-                <MarkdownRenderer content={displayStory.content} />
+                <MarkdownRenderer content={displayStory?.content} />
               </div>
             </>
           )}
